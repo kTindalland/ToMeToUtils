@@ -17,9 +17,9 @@ pygame.init()
 # VARIABLES
 #done = False
 # RGB flatuicolors.com
-RED   = (255,  0,  0)
+RED     = (255,  0,  0)
 GREEN   = (  0,255,  0)
-BLUE     = (  0,  0,255)
+BLUE    = (  0,  0,255)
 WHITE   = (255,255,255)
 BLACK   = (  0,  0,  0)
 
@@ -41,8 +41,8 @@ O_YELLOW = (243, 156, 18)
 ORANGE   = (230, 126, 34)
 D_ORANGE = (211, 84,  0)
 
-RED   = (231, 76, 60)
-D_RED   = (192, 57, 43)
+RED      = (231, 76, 60)
+D_RED    = (192, 57, 43)
 
 GREY_1   = (236, 240, 241)
 GREY_2   = (189, 195, 199)
@@ -64,7 +64,7 @@ def factorial(i):
         i -= 1
         total *= i
     return total
-    
+
 
 def setup_pygame(screensize=size,givencaption="Caption required."):
     lsize = screensize
@@ -73,7 +73,7 @@ def setup_pygame(screensize=size,givencaption="Caption required."):
     pygame.display.set_caption(caption)
     clock = pygame.time.Clock()
     return [screen,clock]
-    
+
 
 def draw_gnome(x,y,screen,hatcol):
     #BODY
@@ -88,7 +88,7 @@ def draw_gnome(x,y,screen,hatcol):
     #EYES
     pygame.draw.rect(screen,BLACK, (x+15,y+39,5,5))
     pygame.draw.rect(screen,BLACK, (x+30,y+39,5,5))
-    
+
 
 def flip():
     pygame.display.flip()
@@ -418,7 +418,7 @@ class Toggle_switch():
         self.x,       self.y       = lcl_coords[0],     lcl_coords[1]
         self.width,   self.height  = lcl_dimentions[0], lcl_dimentions[1]
         self.colours, self.speed    = lcl_colours,       lcl_speed
-        
+
         # Set hard variables
         self.tab_width             = self.width * 0.5
         self.position              = 0
@@ -429,7 +429,7 @@ class Toggle_switch():
 
         self.r, self.b, self.g = 0, 0, 0
         self.i = 0
-        
+
     def draw(self):
         # Fill background
         pygame.draw.rect(screen, GREY_3, (self.x, self.y, self.width, self.height))
@@ -444,8 +444,8 @@ class Toggle_switch():
             self.__tab_x_should = self.x+(self.position*(self.width-self.tab_width))
             if self.tab_info[0] != self.__tab_x_should:
                 self.tab_info[0] = self.__tab_x_should
-                    
-        
+
+
 
         # Draw tab and outline
         self.__draw_tab(self.tab_info,self.colours[self.position])
@@ -471,7 +471,7 @@ class Toggle_switch():
         self.r = self.on_col[0] + (d_r * percentage)
         self.g = self.on_col[1] + (d_g * percentage)
         self.b = self.on_col[2] + (d_b * percentage)
-                
+
         # Draw background, then outline
         pygame.draw.rect(screen, col, (lcl_info[0],lcl_info[1],lcl_info[2],lcl_info[3]))
         pygame.draw.rect(screen, BLACK, (lcl_info[0],lcl_info[1],lcl_info[2],lcl_info[3]),3)
@@ -497,7 +497,7 @@ class Toggle_switch():
 
 class Drop_down():
     def __init__(self, lcl_coords, lcl_dimentions,lcl_options):
-        # Define argument variables     
+        # Define argument variables
         self.x,       self.y        = lcl_coords[0],     lcl_coords[1]
         self.width,   self.height   = lcl_dimentions[0], lcl_dimentions[1]
         self.options, self.selected = lcl_options,       lcl_options[0]
