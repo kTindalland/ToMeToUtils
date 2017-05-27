@@ -13,7 +13,6 @@ import math
 # PYGAME INIT
 pygame.init()
 
-
 # VARIABLES
 #done = False
 # RGB flatuicolors.com
