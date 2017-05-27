@@ -417,7 +417,7 @@ class Toggle_switch():
         # Set argument variables
         self.x,       self.y       = lcl_coords[0],     lcl_coords[1]
         self.width,   self.height  = lcl_dimentions[0], lcl_dimentions[1]
-        self.colours, self.speed    = lcl_colours,       lcl_speed
+        self.colours, self.speed   = lcl_colours,       lcl_speed
 
         # Set hard variables
         self.tab_width             = self.width * 0.5
@@ -437,8 +437,8 @@ class Toggle_switch():
         # Animation
         if type(self.speed) == float or type(self.speed) == int:
             for i in range(self.speed):
-                self.__tab_x_should = self.x+(self.position*(self.width-self.tab_width))
-                if self.tab_info[0] != self.__tab_x_should:
+                self.__tab_x_should   = self.x+(self.position*(self.width-self.tab_width))
+                if self.tab_info[0]  != self.__tab_x_should:
                     self.tab_info[0] += (self.__tab_x_should - self.tab_info[0]) / abs(self.__tab_x_should - self.tab_info[0])
         else:
             self.__tab_x_should = self.x+(self.position*(self.width-self.tab_width))
