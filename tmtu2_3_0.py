@@ -161,8 +161,6 @@ def inTriangle(lcl_tricoords, lcl_coord,lcl_isCartesian=False,lcl_size=size):
     if not lcl_isCartesian:
         lcl_tricoords = convertCoords(lcl_tricoords[0],lcl_tricoords[1],lcl_tricoords[2])
         lcl_coord     = convertCoords(lcl_coord)[0]
-        print(lcl_tricoords)
-        print(lcl_coord)
 
     AB = [lcl_tricoords[0],lcl_tricoords[1]]
     BC = [lcl_tricoords[1],lcl_tricoords[2]]
@@ -616,3 +614,53 @@ class Drop_down():
         self.text = font.render(self.selected, True, BLACK)
         screen.blit(self.text,[self.x + 3, (self.y + self.height) - (self.text.get_height() + 2)])
     """ </ Drawing block > """
+
+
+class Scroller():
+    def __init__(self, lcl_info, lcl_coords, lcl_dimentions, lcl_values, lcl_isCartesian=False):
+        self.__coords                         = lcl_coords
+        self.__screen,      self.__screensize = lcl_info[0],       lcl_info[1]
+        self.__font                           = lcl_info[2]
+        self.__width,       self.__height     = lcl_dimentions[0], lcl_dimentions[1]
+        self.__cartesian                      = lcl_isCartesian
+        self.__values                         = lcl_values
+        self.__active_value                   = 0
+        self.bgcol,         self.arrowcol     = GREY_1,            RED
+        self.buffer                           = 10
+
+    def draw(self):
+        # Draw box
+        draw_coords = [self.__coords[0]-(self.__width//2),self.__coords[1]-(self.__height//2),self.__width,self.__height]
+        pygame.draw.rect(self.__screen, self.bgcol, draw_coords)
+        pygame.draw.rect(self.__screen, BLACK, draw_coords,3)
+
+        # Draw triangle 1
+        self.__tri1_coords = [[draw_coords[0],draw_coords[1]-self.buffer],[draw_coords[0]+self.__width,draw_coords[1]-self.buffer],[self.__coords[0],draw_coords[1]-(self.__width*0.4)]]
+        pygame.draw.polygon(self.__screen, self.arrowcol,self.__tri1_coords)
+        pygame.draw.polygon(self.__screen, BLACK,self.__tri1_coords,3)
+
+        # Draw triangle 2
+        self.__tri2_coords = [[draw_coords[0],draw_coords[1]+self.buffer+self.__height],[draw_coords[0]+self.__width,draw_coords[1]+self.buffer+self.__height],[self.__coords[0],draw_coords[1]+(self.__width*0.4)+self.__height]]
+        pygame.draw.polygon(self.__screen, self.arrowcol,self.__tri2_coords)
+        pygame.draw.polygon(self.__screen, BLACK,self.__tri2_coords,3)
+
+        # Display text
+        text = self.__font.render(str(self.__values[self.__active_value]),True, BLACK)
+        text_width, text_height = text.get_width(), text.get_height()
+        self.__screen.blit(text,[self.__coords[0]-(text_width//2), self.__coords[1]-(text_height//2)])
+
+    def detect(self,lcl_event):
+        if lcl_event.type == pygame.MOUSEBUTTONDOWN:
+            m_pos = pygame.mouse.get_pos()
+            if inTriangle(self.__tri1_coords,m_pos):
+                self.__active_value += 1
+            elif inTriangle(self.__tri2_coords,m_pos):
+                self.__active_value -= 1
+
+            if self.__active_value > (len(self.__values)-1):
+                self.__active_value = 0
+            elif self.__active_value < 0:
+                self.__active_value = (len(self.__values)-1)
+
+    def output(self):
+        return self.__values[self.__active_value]
