@@ -134,7 +134,16 @@ def inTriangle(lcl_tricoords, lcl_coord):
 
     def sameSide(lcl_line, lcl_other, lcl_coord):
         p,q  = lcl_line[0], lcl_line[1]
-        grad = (p[1]-q[1]) / (p[0]-q[0])
+        try:
+            grad = (p[1]-q[1]) / (p[0]-q[0])
+        except ZeroDivisionError:
+            if lcl_coord[0] == p[0]:
+                bounds = sorted([p[1],q[1]])
+                if bounds[0] <= lcl_other[1] <= bounds[1]:
+                    return True
+            return False
+        except Exception:
+            print("Unexpected Error occured in "+__name__+". Within inTriangle function.")
         c    = p[1] - (grad*p[0])
         if lcl_coord[1] == (grad*lcl_coord[0]) + c:
             return True
@@ -149,6 +158,8 @@ def inTriangle(lcl_tricoords, lcl_coord):
 
     if sameSide(AB,lcl_tricoords[2],lcl_coord) and sameSide(BC,lcl_tricoords[0],lcl_coord) and sameSide(AC,lcl_tricoords[1],lcl_coord):
         return True
+    else:
+        return False
 # CLASSES
 #"Let's make some sliders bitchezzzzzz"~Kai 2k17
 class Slider():
