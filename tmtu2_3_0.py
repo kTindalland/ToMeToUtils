@@ -125,7 +125,13 @@ def get_text(my_string,event):
     return my_string
 
 
-def inTriangle(lcl_tricoords, lcl_coord):
+def inTriangle(lcl_tricoords, lcl_coord,lcl_isCartesian=False,lcl_size=size):
+    def convertCoords(*args):
+        result = []
+        for i in args:
+            result.append([i[0],size[1]-i[1]])
+        return result
+
     def whichSide(lcl_eq, lcl_point):
         if lcl_point[1] > (lcl_eq[0]*lcl_point[0]) + lcl_eq[1]:
             return True
@@ -151,6 +157,12 @@ def inTriangle(lcl_tricoords, lcl_coord):
             return True
         else:
             return False
+
+    if not lcl_isCartesian:
+        lcl_tricoords = convertCoords(lcl_tricoords[0],lcl_tricoords[1],lcl_tricoords[2])
+        lcl_coord     = convertCoords(lcl_coord)[0]
+        print(lcl_tricoords)
+        print(lcl_coord)
 
     AB = [lcl_tricoords[0],lcl_tricoords[1]]
     BC = [lcl_tricoords[1],lcl_tricoords[2]]
