@@ -65,13 +65,16 @@ def factorial(i):
     return total
 
 
-def setup_pygame(screensize=size,givencaption="Caption required."):
+def setup_pygame(screensize=size,givencaption="Caption required.",info=False):
     lsize = screensize
     caption = givencaption
     screen = pygame.display.set_mode(lsize)
     pygame.display.set_caption(caption)
     clock = pygame.time.Clock()
-    return [screen,clock]
+    if not info:
+        return [screen,clock]
+    else:
+        return [screen,clock,[screen,size,font]]
 
 
 def draw_gnome(x,y,screen,hatcol):
