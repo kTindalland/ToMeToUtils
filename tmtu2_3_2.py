@@ -128,7 +128,7 @@ def get_text(my_string,event):
     return my_string
 
 
-def inTriangle(lcl_tricoords, lcl_coord,lcl_isCartesian=False,lcl_size=size):
+def in_triangle(lcl_tricoords, lcl_coord,lcl_isCartesian=False,lcl_size=size):
     def convertCoords(*args):
         result = []
         for i in args:
@@ -152,7 +152,7 @@ def inTriangle(lcl_tricoords, lcl_coord,lcl_isCartesian=False,lcl_size=size):
                     return True
             return False
         except Exception:
-            print("Unexpected Error occured in "+__name__+". Within inTriangle function.")
+            print("Unexpected Error occured in "+__name__+". Within in_triangle function.")
         c    = p[1] - (grad*p[0])
         if lcl_coord[1] == (grad*lcl_coord[0]) + c:
             return True
@@ -429,7 +429,7 @@ class Smurf(Gnome):
         else:
             self.hatcol, self.body = RED, RED
 
-class Dragable():
+class Draggable():
     def __init__(self,x=0,y=0,xlen=10,ylen=10,iscircle=False):
         self.x, self.y, self.width, self.height, self.toggle, self.iscircle = x, y, xlen, ylen, False, iscircle
         self.x_offset, self.y_offset = self.width//2, self.height//2
@@ -655,9 +655,9 @@ class Scroller():
     def detect(self,lcl_event):
         if lcl_event.type == pygame.MOUSEBUTTONDOWN:
             m_pos = pygame.mouse.get_pos()
-            if inTriangle(self.__tri1_coords,m_pos):
+            if in_triangle(self.__tri1_coords,m_pos):
                 self.__active_value += 1
-            elif inTriangle(self.__tri2_coords,m_pos):
+            elif in_triangle(self.__tri2_coords,m_pos):
                 self.__active_value -= 1
 
             if self.__active_value > (len(self.__values)-1):
