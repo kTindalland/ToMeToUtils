@@ -679,7 +679,16 @@ class Textbox():
         self.selected                = False
         self.text                    = ''
         self.__caps                  = False
-        self.starttextcol        = lcl_starttextcol
+        self.starttextcol            = lcl_starttextcol
+        self.cursor                  = 0
+
+    def insert_string(self, lcl_string, lcl_insert, lcl_index):
+        self.cursor += 1
+        return lcl_string[:lcl_index] + lcl_insert + lcl_string[lcl_index:]
+
+    def backspace(self, lcl_string, lcl_index):
+        self.cursor -= 1
+        return lcl_string[:lcl_index-1] + lcl_string[lcl_index:]
 
     def draw(self):
         bordercol     = BLACK
@@ -719,23 +728,36 @@ class Textbox():
 
         if self.selected:
             if lcl_event.type == pygame.KEYDOWN:
-                print(lcl_event.key)
-                if lcl_event.key == 304 or lcl_event.key == 303:
+                #print(lcl_event.key)
+                print(self.cursor)
+                if lcl_event.key == 304 or lcl_event.key == 303: # Shift
                     self.__caps = True
-                elif lcl_event.key >= 97 and lcl_event.key <= 122:
+
+                elif lcl_event.key >= 97 and lcl_event.key <= 122: # A - Z
                     addition = alphabet[lcl_event.key - 97]
                     if self.__caps:
                         addition = addition.upper()
-                    self.text += addition
-                elif lcl_event.key == 32:
-                    self.text += " "
-                elif lcl_event.key == 8:
-                    self.text = self.text[0:-1]
-                elif lcl_event.key == 59:
+                    self.text = self.insert_string(self.text, addition, self.cursor)
+
+                elif lcl_event.key == 32: # Space bar
+                    self.text = self.insert_string(self.text, " ", self.cursor)
+                elif lcl_event.key == 8: # Backspace
+                    #self.text = self.text[0:-1]
+                    #self.cursor -= 1
+                    self.text = self.backspace(self.text,self.cursor)
+                elif lcl_event.key == 59: # ; - :
                     if self.__caps:
-                        self.text += ":"
+                        self.text = self.insert_string(self.text, ":", self.cursor)
                     else:
-                        self.text += ";"
+                        self.text = self.insert_string(self.text, ";", self.cursor)
+                elif lcl_event.key == 275: # Right arrow key
+                    self.cursor += 1
+                    if self.cursor > len(self.text):
+                        self.cursor = len(self.text)-1
+                elif lcl_event.key == 276: # Left arrow key
+                    self.cursor -= 1
+                    if self.cursor < 0:
+                        self.cursor = 0
 
 
             elif lcl_event.type == pygame.KEYUP:
