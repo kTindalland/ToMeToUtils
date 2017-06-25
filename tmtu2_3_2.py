@@ -9,6 +9,7 @@
 import csv
 import pygame
 import math
+import time
 
 # PYGAME INIT
 pygame.init()
@@ -667,3 +668,66 @@ class Scroller():
 
     def output(self):
         return self.__values[self.__active_value]
+
+
+class Textbox():
+    def __init__(self, lcl_info, lcl_coords, lcl_dimentions, lcl_starttext='', lcl_starttextcol=GREY_2):
+        self.__screen, self.font     = lcl_info[0],       lcl_info[2]
+        self.__x,      self.__y      = lcl_coords[0],     lcl_coords[1]
+        self.__width,  self.__height = lcl_dimentions[0], lcl_dimentions[1]
+        self.starttext               = lcl_starttext
+        self.selected                = False
+        self.text                    = ''
+        self.__caps                  = False
+        self.starttextcol        = lcl_starttextcol
+
+    def draw(self):
+        bordercol     = BLACK
+        backgroundcol = WHITE
+
+        # Draw box
+        pygame.draw.rect(self.__screen, backgroundcol, (self.__x, self.__y, self.__width, self.__height))
+        pygame.draw.rect(self.__screen, bordercol, (self.__x, self.__y, self.__width, self.__height),3)
+
+        # Draw text
+        if len(self.text) > 0:
+            text = self.font.render(self.text, True, BLACK, True)
+            isText = True
+        elif len(self.starttext) > 0:
+            text = self.font.render(self.starttext, True, self.starttextcol, True)
+            isText = True
+        else:
+            isText = False
+
+        if isText:
+            textx      = self.__x + 5
+            textheight = text.get_height()
+            texty      = ((self.__height - textheight) // 2) + self.__y
+
+            self.__screen.blit(text, [textx, texty])
+
+    def detect(self, lcl_event):
+        alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
+         "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+
+        if lcl_event.type == pygame.KEYDOWN:
+            print(lcl_event.key)
+            if lcl_event.key == 304:
+                self.__caps = True
+            elif lcl_event.key >= 97 and lcl_event.key <= 122:
+                addition = alphabet[lcl_event.key - 97]
+                if self.__caps:
+                    addition = addition.upper()
+                self.text += addition
+            elif lcl_event.key == 32:
+                self.text += " "
+            elif lcl_event.key == 8:
+                self.text = self.text[0:-1]
+
+
+        elif lcl_event.type == pygame.KEYUP:
+            if lcl_event.key == 304:
+                self.__caps = False
+
+    def return_input(self):
+        return self.text
