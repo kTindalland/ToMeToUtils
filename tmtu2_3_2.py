@@ -708,26 +708,39 @@ class Textbox():
 
     def detect(self, lcl_event):
         alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
-         "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+        "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
 
-        if lcl_event.type == pygame.KEYDOWN:
-            print(lcl_event.key)
-            if lcl_event.key == 304:
-                self.__caps = True
-            elif lcl_event.key >= 97 and lcl_event.key <= 122:
-                addition = alphabet[lcl_event.key - 97]
-                if self.__caps:
-                    addition = addition.upper()
-                self.text += addition
-            elif lcl_event.key == 32:
-                self.text += " "
-            elif lcl_event.key == 8:
-                self.text = self.text[0:-1]
+        if lcl_event.type == pygame.MOUSEBUTTONDOWN:
+            m_pos = pygame.mouse.get_pos()
+            if self.__x <= m_pos[0] <= (self.__x + self.__width) and self.__y <= m_pos[1] <= (self.__y + self.__height):
+                self.selected = True
+            else:
+                self.selected = False
+
+        if self.selected:
+            if lcl_event.type == pygame.KEYDOWN:
+                print(lcl_event.key)
+                if lcl_event.key == 304 or lcl_event.key == 303:
+                    self.__caps = True
+                elif lcl_event.key >= 97 and lcl_event.key <= 122:
+                    addition = alphabet[lcl_event.key - 97]
+                    if self.__caps:
+                        addition = addition.upper()
+                    self.text += addition
+                elif lcl_event.key == 32:
+                    self.text += " "
+                elif lcl_event.key == 8:
+                    self.text = self.text[0:-1]
+                elif lcl_event.key == 59:
+                    if self.__caps:
+                        self.text += ":"
+                    else:
+                        self.text += ";"
 
 
-        elif lcl_event.type == pygame.KEYUP:
-            if lcl_event.key == 304:
-                self.__caps = False
+            elif lcl_event.type == pygame.KEYUP:
+                if lcl_event.key == 304 or lcl_event.key == 303:
+                    self.__caps = False
 
     def return_input(self):
         return self.text
