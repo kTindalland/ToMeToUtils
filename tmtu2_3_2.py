@@ -681,6 +681,10 @@ class Textbox():
         self.__caps                  = False
         self.starttextcol            = lcl_starttextcol
         self.cursor                  = 0
+        self.starttime               = int(time.time())
+
+    def reset_time(self):
+        self.starttime = int(time.time())
 
     def insert_string(self, lcl_string, lcl_insert, lcl_index):
         self.cursor += 1
@@ -717,6 +721,7 @@ class Textbox():
             texty      = ((self.__height - textheight) // 2) + self.__y
 
             self.__screen.blit(text, [textx, texty])
+            self.draw_cursor()
 
     def detect(self, lcl_event):
         alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
@@ -744,8 +749,6 @@ class Textbox():
                 elif lcl_event.key == 32: # Space bar
                     self.text = self.insert_string(self.text, " ", self.cursor)
                 elif lcl_event.key == 8: # Backspace
-                    #self.text = self.text[0:-1]
-                    #self.cursor -= 1
                     self.text = self.backspace(self.text,self.cursor)
                 elif lcl_event.key == 59: # ; - :
                     if self.__caps:
@@ -756,15 +759,26 @@ class Textbox():
                     self.cursor += 1
                     if self.cursor > len(self.text):
                         self.cursor = len(self.text)
+                    self.reset_time()
                 elif lcl_event.key == 276: # Left arrow key
                     self.cursor -= 1
                     if self.cursor < 0:
                         self.cursor = 0
-
+                    self.reset_time()
 
             elif lcl_event.type == pygame.KEYUP:
                 if lcl_event.key == 304 or lcl_event.key == 303:
                     self.__caps = False
+
+    def draw_cursor(self):
+        current_time = int(time.time())
+        delta_time   = current_time - self.starttime
+        if delta_time % 2 == 0 and self.selected:
+            render = self.font.render(self.text[:self.cursor],True,BLACK,True)
+            x_offset = render.get_width() + 5 + self.__x
+            height   = render.get_height()
+            y_offset = ((self.__height - height) // 2) + self.__y
+            pygame.draw.line(self.__screen, BLACK,[x_offset,y_offset],[x_offset, y_offset+height],3)
 
     def return_input(self):
         return self.text
