@@ -686,16 +686,27 @@ class Textbox():
     def reset_time(self):
         self.starttime = int(time.time())
 
-    def check_length(self):
-        text = self.font.render(self.text, True, BLACK)
+    def check_length(self, lcl_string):
+        text = self.font.render(lcl_string, True, BLACK)
         if text.get_width() > self.__width - 10:
             return True
         else:
             return False
 
     def insert_string(self, lcl_string, lcl_insert, lcl_index):
-        self.cursor += 1
-        return lcl_string[:lcl_index] + lcl_insert + lcl_string[lcl_index:]
+            strng = lcl_string[:lcl_index] + lcl_insert + lcl_string[lcl_index:]
+            if self.check_length(strng):
+                return self.text
+            else:
+                self.cursor += 1
+                return strng
+
+    def cutdown_string(self, lcl_string):
+        length = self.font.render(lcl_string, True, BLACK).get_width()
+        if length > self.__width - 10:
+            return self.cutdown_string(lcl_string[:-1])
+        else:
+            return lcl_string
 
     def backspace(self, lcl_string, lcl_index):
         if self.cursor <= 0:
@@ -717,7 +728,7 @@ class Textbox():
             text = self.font.render(self.text, True, BLACK)
             isText = True
         elif len(self.starttext) > 0:
-            text = self.font.render(self.starttext, True, self.starttextcol)
+            text = self.font.render(self.cutdown_string(self.starttext), True, self.starttextcol)
             isText = True
         else:
             isText = False
