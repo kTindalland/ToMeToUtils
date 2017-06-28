@@ -686,6 +686,13 @@ class Textbox():
     def reset_time(self):
         self.starttime = int(time.time())
 
+    def check_length(self):
+        text = self.font.render(self.text, True, BLACK)
+        if text.get_width() > self.__width - 10:
+            return True
+        else:
+            return False
+
     def insert_string(self, lcl_string, lcl_insert, lcl_index):
         self.cursor += 1
         return lcl_string[:lcl_index] + lcl_insert + lcl_string[lcl_index:]
@@ -707,10 +714,10 @@ class Textbox():
 
         # Draw text
         if len(self.text) > 0:
-            text = self.font.render(self.text, True, BLACK, True)
+            text = self.font.render(self.text, True, BLACK)
             isText = True
         elif len(self.starttext) > 0:
-            text = self.font.render(self.starttext, True, self.starttextcol, True)
+            text = self.font.render(self.starttext, True, self.starttextcol)
             isText = True
         else:
             isText = False
@@ -774,7 +781,7 @@ class Textbox():
         current_time = int(time.time())
         delta_time   = current_time - self.starttime
         if delta_time % 2 == 0 and self.selected:
-            render = self.font.render(self.text[:self.cursor],True,BLACK,True)
+            render = self.font.render(self.text[:self.cursor],True,BLACK)
             x_offset = render.get_width() + 5 + self.__x
             height   = render.get_height()
             y_offset = ((self.__height - height) // 2) + self.__y
