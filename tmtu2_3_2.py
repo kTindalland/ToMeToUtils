@@ -744,6 +744,8 @@ class Textbox():
     def detect(self, lcl_event):
         alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
         "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+        nums = [["0",")"],["1","!"],["2","\""],["3","£"],["4","$"],["5","%"],
+               ["6","^"],["7","&"],["8","*"],["9","("]]
 
         if lcl_event.type == pygame.MOUSEBUTTONDOWN:
             m_pos = pygame.mouse.get_pos()
@@ -757,22 +759,16 @@ class Textbox():
                 #print(lcl_event.key)
                 if lcl_event.key == 304 or lcl_event.key == 303: # Shift
                     self.__caps = True
-
                 elif lcl_event.key >= 97 and lcl_event.key <= 122: # A - Z
-                    addition = alphabet[lcl_event.key - 97]
-                    if self.__caps:
-                        addition = addition.upper()
-                    self.text = self.insert_string(self.text, addition, self.cursor)
-
+                    self.add_key(alphabet[lcl_event.key - 97].upper(),alphabet[lcl_event.key - 97])
+                elif lcl_event.key >= 48 and lcl_event.key <= 57: # 0 - 9
+                    self.add_key(nums[lcl_event.key - 48][1],nums[lcl_event.key - 48][0])
                 elif lcl_event.key == 32: # Space bar
                     self.text = self.insert_string(self.text, " ", self.cursor)
                 elif lcl_event.key == 8: # Backspace
                     self.text = self.backspace(self.text,self.cursor)
                 elif lcl_event.key == 59: # ; - :
-                    if self.__caps:
-                        self.text = self.insert_string(self.text, ":", self.cursor)
-                    else:
-                        self.text = self.insert_string(self.text, ";", self.cursor)
+                    self.add_key(":",";")
                 elif lcl_event.key == 275: # Right arrow key
                     self.cursor += 1
                     if self.cursor > len(self.text):
@@ -783,10 +779,27 @@ class Textbox():
                     if self.cursor < 0:
                         self.cursor = 0
                     self.reset_time()
-
+                elif lcl_event.key == 47: # / - ?
+                    self.add_key("?","/")
+                elif lcl_event.key == 46: # . - >
+                    self.add_key(">",".")
+                elif lcl_event.key == 44: # , - <
+                    self.add_key("<",",")
+                elif lcl_event.key == 45:
+                    self.add_key("_","-")
+                elif lcl_event.key == 61:
+                    self.add_key("+","=")
+                elif lcl_event.key == 60:
+                    self.add_key("|","\\")
             elif lcl_event.type == pygame.KEYUP:
                 if lcl_event.key == 304 or lcl_event.key == 303:
                     self.__caps = False
+
+    def add_key(self,ifcaps,norm):
+        if self.__caps:
+            self.text = self.insert_string(self.text, ifcaps, self.cursor)
+        else:
+            self.text = self.insert_string(self.text, norm, self.cursor)
 
     def draw_cursor(self):
         current_time = int(time.time())
