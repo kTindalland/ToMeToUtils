@@ -671,7 +671,7 @@ class Scroller():
 
 
 class Textbox():
-    def __init__(self, lcl_info, lcl_coords, lcl_dimentions, lcl_starttext='', lcl_starttextcol=GREY_2):
+    def __init__(self, lcl_info, lcl_coords, lcl_dimentions, lcl_starttext='', lcl_starttextcol=GREY_2, lcl_ispassword=False):
         self.__screen, self.font     = lcl_info[0],       lcl_info[2]
         self.__x,      self.__y      = lcl_coords[0],     lcl_coords[1]
         self.__width,  self.__height = lcl_dimentions[0], lcl_dimentions[1]
@@ -682,6 +682,7 @@ class Textbox():
         self.starttextcol            = lcl_starttextcol
         self.cursor                  = 0
         self.starttime               = int(time.time())
+        self.password                = lcl_ispassword
 
     def reset_time(self):
         self.starttime = int(time.time())
@@ -725,7 +726,10 @@ class Textbox():
 
         # Draw text
         if len(self.text) > 0:
-            text = self.font.render(self.text, True, BLACK)
+            if self.password:
+                text = self.font.render('*'*len(self.text), True, BLACK)
+            else:
+                text = self.font.render(self.text, True, BLACK)
             isText = True
         elif len(self.starttext) > 0:
             text = self.font.render(self.cutdown_string(self.starttext), True, self.starttextcol)
@@ -805,7 +809,10 @@ class Textbox():
         current_time = int(time.time())
         delta_time   = current_time - self.starttime
         if delta_time % 2 == 0 and self.selected:
-            render = self.font.render(self.text[:self.cursor],True,BLACK)
+            if self.password:
+                render = self.font.render('*'*len(self.text[:self.cursor]),True,BLACK)
+            else:
+                render = self.font.render(self.text[:self.cursor],True,BLACK)
             x_offset = render.get_width() + 5 + self.__x
             height   = render.get_height()
             y_offset = ((self.__height - height) // 2) + self.__y
