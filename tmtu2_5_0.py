@@ -232,51 +232,45 @@ class Slider():
 
 
 class Toggle_button():
-    def __init__(self, x, y, radius, button_type, screen, start_position, on, off):
-        self.x_pos,self.y_pos, self.radius, self.type, self.on, self.off = x, y, radius, button_type, on ,off
-        if start_position == True:
-            self.colour = on
-            self.boolean = True
-        else:
-            self.colour = off
-            self.boolean = False
-        self.screen = screen
-        if self.type == "circle":
-            self.diameter = self.radius*2
-            self.midpoint = [self.x_pos,self.y_pos]
-        if self.type == "square":
-            self.height = self.radius*2
-            self.midpoint = [self.x_pos+self.radius,self.y_pos+self.radius]
-        if self.type == "rectangle":
-            self.width = self.radius*2
-            self.height = self.width*0.4
-            self.midpoint = [self.x_pos+self.radius, self.y_pos+int(self.height/2)]
-    def draw(self):
-        if self.boolean == True:
-            self.colour = self.on
-        else:
-            self.colour = self.off
-        if self.type == "circle":
-            pygame.draw.circle(self.screen,(0,0,0),(self.x_pos,self.y_pos),self.radius)
-            pygame.draw.circle(self.screen,self.colour,(self.x_pos,self.y_pos),self.radius-3)
-        if self.type == "square":
-            pygame.draw.rect(self.screen,self.colour,(self.x_pos, self.y_pos,self.height,self.height))
-            pygame.draw.rect(self.screen,(0,0,0),(self.x_pos, self.y_pos,self.height,self.height),3)
-        if self.type == "rectangle":
-            pygame.draw.rect(self.screen,self.colour,(self.x_pos,self.y_pos,self.width,self.height))
-            pygame.draw.rect(self.screen,(0,0,0),(self.x_pos,self.y_pos,self.width,self.height),3)
-    def detect(self,event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-                self.pos = pygame.mouse.get_pos()
-                if self.type == "circle":
-                    if (self.pos[0] - self.midpoint[0])**2 + (self.pos[1] - self.midpoint[1])**2 < self.radius**2:
-                        self.boolean = not self.boolean
-                if self.type == "square":
-                    if self.pos[0] >= self.x_pos and self.pos[0] <= self.x_pos + self.height and self.pos[1] >= self.y_pos and self.pos[1] <= self.y_pos + self.height:
-                        self.boolean = not self.boolean
-                if self.type == "rectangle":
-                    if self.pos[0] >= self.x_pos and self.pos[0] <= self.x_pos + self.width and self.pos[1] >= self.y_pos and self.pos[1] <= self.y_pos + self.height:
-                        self.boolean = not self.boolean
+        def __init__(self, info, startcoords, dimentions, stateinfo):
+            self.screen, self.font = info[0], info[2]
+            self.x, self.y         = startcoords
+            if isinstance(dimentions, list):
+                self.width, self.height = dimentions
+            else:
+                self.width, self.height = dimentions, None
+            self.state, self.oncol, self.offcol = stateinfo
+        def draw(self, label=""):
+            colour = self.offcol
+            if self.state:
+                colour = self.oncol
+            if self.height != None:
+                pygame.draw.rect(self.screen, colour, [self.x, self.y, self.width, self.height])
+                pygame.draw.rect(self.screen, BLACK, [self.x, self.y, self.width, self.height], 3)
+            else:
+                pygame.draw.circle(self.screen, colour, [self.x, self.y], self.width)
+                pygame.draw.circle(self.screen, BLACK, [self.x, self.y], self.width, 3)
+            if label != "":
+                self.draw_label(label)
+        def detect(self, event):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mpos = pygame.mouse.get_pos()
+                if self.height != None:
+                    if (self.x <= mpos[0] <= (self.x + self.width)) and (self.y <= mpos[1] <= (self.y + self.height)):
+                        self.state = not self.state
+                        return True
+                else:
+                    if (mpos[0] - self.x)**2 + (mpos[1] - self.y)**2 < self.width**2:
+                        self.state = not self.state
+                        return True
+            return False
+        def draw_label(self, label):
+            text = self.font.render(label, True, BLACK)
+            width, height = text.get_width() // 2, text.get_height() // 2
+            if self.height != None:
+                self.screen.blit(text, [self.x + (self.width // 2) - width, self.y + (self.height // 2) - height])
+            else:
+                self.screen.blit(text, [self.x - width, self.y - height])
 
 
 class Tickbox():
